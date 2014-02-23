@@ -26,7 +26,8 @@ Class S3Dict:
         return self[key]
 
     def update(self, d):
-        raise NotImplementedError
+        for k,v in d.items():
+            self[k] = v
 
     def keys(self):
         raise NotImplementedError
