@@ -10,7 +10,7 @@ setup(name='s3dict',
     ],
     packages=['s3dict'],
 
-    install_requires = ['boto'],
+    install_requires = [],
     tests_require = ['nose'],
 
     version='0.0.1',

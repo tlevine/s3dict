@@ -1,6 +1,18 @@
+import zlib, pickle, io
+
+def connect(access_key, secret_key, bucket):
+    import tinys3
+    return tinys3.Connection(access_key, secret_key, default_bucket = bucket)
+
+def _dumps(x):
+    return zlib.compress(pickle.dumps(x))
+
+def _loads(x):
+    return pickle.loads(zlib.decompress(x))
+
 class S3Dict:
-    def __init__(self, bucket):
-        self.bucket = bucket
+    def __init__(self, connection):
+        self.c = connection
 
     def __contains__(self):
         raise NotImplementedError
@@ -9,10 +21,10 @@ class S3Dict:
         raise NotImplementedError
 
     def __getitem__(self, k):
-        raise NotImplementedError
+        return _loads(self.c.get(k))
 
     def __setitem__(self, k, v):
-        raise NotImplementedError
+        return self.c.upload(k, io.BytesIO(_dumps(v)))
 
     def get(self, k, d = None):
         if k in self:
