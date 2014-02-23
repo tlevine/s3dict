@@ -1,8 +1,6 @@
 import zlib, pickle, io
+import s3
 
-def connect(access_key, secret_key, bucket):
-    import tinys3
-    return tinys3.Connection(access_key, secret_key, default_bucket = bucket)
 
 def _dumps(x):
     return zlib.compress(pickle.dumps(x))
@@ -11,20 +9,22 @@ def _loads(x):
     return pickle.loads(zlib.decompress(x))
 
 class S3Dict:
-    def __init__(self, connection):
+    def __init__(self, access_key, secret_key, bucket):
         self.c = connection
+        self.upload = lambda k,v: s3.upload_to_s3(access_key, secret_key, bucket, k, v, 'application/python-pickle')
 
-    def __contains__(self):
+    def __contains__(self, k):
         raise NotImplementedError
 
     def __delitem__(self, k):
         raise NotImplementedError
 
     def __getitem__(self, k):
-        return _loads(self.c.get(k))
+        raise NotImplementedError
+        # return _loads
 
     def __setitem__(self, k, v):
-        return self.c.upload(k, io.BytesIO(_dumps(v)))
+        return self.c.upload(k, _dumps(v))
 
     def get(self, k, d = None):
         if k in self:
