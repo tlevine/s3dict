@@ -1,0 +1,5 @@
+Use S3 like a dictionary. ::
+
+    c = S3Connection(KEY, SECRET)
+    bucket = c.get_bucket('bucket_name')
+    d = S3Dict(bucket)
