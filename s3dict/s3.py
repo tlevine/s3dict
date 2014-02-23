@@ -16,14 +16,14 @@ import hmac
 from http.client import HTTPConnection
 from wsgiref.handlers import format_date_time
 
-def upload_to_s3(aws_key, aws_secret, bucket, filename, contents, mimetype):
+def upload_to_s3(aws_key, aws_secret, bucket, filename, contents, mimetype, encoding):
     timestamp = format_date_time(datetime.now().timestamp())
     string_to_sign = '\n'.join(['PUT', '', mimetype, timestamp, 'x-amz-acl:public-read', '/' + bucket + '/' + filename])
     signed = b64encode(hmac.new(aws_secret.encode('utf-8'), string_to_sign.encode('utf-8'), sha1)).digest().decode('utf-8')
     headers = {
         'Authorization': 'AWS ' + aws_key + ':' + signed,
-        'Content-Type': 'application/python-pickle',
-        'Content-Encoding': 'zlib',
+        'Content-Type': mimetype,
+        'Content-Encoding': encoding,
         'Date': timestamp,
         'Content-Length': len(contents),
         'x-amz-acl': 'public-read'

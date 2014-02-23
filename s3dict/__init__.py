@@ -10,8 +10,7 @@ def _loads(x):
 
 class S3Dict:
     def __init__(self, access_key, secret_key, bucket):
-        self.c = connection
-        self.upload = lambda k,v: s3.upload_to_s3(access_key, secret_key, bucket, k, v, 'application/python-pickle')
+        self.upload = lambda k,v: s3.upload_to_s3(access_key, secret_key, bucket, k, v, 'application/python-pickle', 'zlib')
 
     def __contains__(self, k):
         raise NotImplementedError
@@ -24,7 +23,7 @@ class S3Dict:
         # return _loads
 
     def __setitem__(self, k, v):
-        return self.c.upload(k, _dumps(v))
+        return self.upload(k, _dumps(v))
 
     def get(self, k, d = None):
         if k in self:
