@@ -1,4 +1,4 @@
-Class S3Dict:
+class S3Dict:
     def __init__(self, bucket):
         self.bucket = bucket
 
