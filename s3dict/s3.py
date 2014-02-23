@@ -22,7 +22,8 @@ def upload_to_s3(aws_key, aws_secret, bucket, filename, contents, mimetype):
     signed = b64encode(hmac.new(aws_secret.encode('utf-8'), string_to_sign.encode('utf-8'), sha1)).digest().decode('utf-8')
     headers = {
         'Authorization': 'AWS ' + aws_key + ':' + signed,
-        'Content-Type': mimetype,
+        'Content-Type': 'application/python-pickle',
+        'Content-Encoding': 'zlib',
         'Date': timestamp,
         'Content-Length': len(contents),
         'x-amz-acl': 'public-read'
